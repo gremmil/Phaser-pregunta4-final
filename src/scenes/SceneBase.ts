@@ -81,15 +81,37 @@ export default class SceneBase extends Phaser.Scene {
       this.scene.pause();
     }
   };
-
   update(time: number, delta: number): void {
   }
-
   updateSceneInfo(info: SceneInfo) {
     this.events.emit('updateSceneInfo', info);
   }
   showAlert(alertInfo: AlertInfo) {
     this.events.emit('showAlert', alertInfo);
+  }
+  //collision
+  enemyBulletsOverlapPlayer(player: Player, bullets: Phaser.GameObjects.Group) {
+    this.physics.add.overlap(player, bullets, (player: Player, bullet: EnemyBullet) => {
+      bullet.destroy();
+      player.killedAudio.play();
+      player.lives--;
+      this.sceneInfo = { ...this.sceneInfo, playerLives: player.lives }
+      this.updateSceneInfo(this.sceneInfo);
+      if (player.lives === 0) {
+        this.scene.pause();
+        const alertInfo: AlertInfo = {
+          message: '¡Te quedaste sin vidas!\n¿Deseas Reiniciar el Nivel?',
+          action: 'restart'
+        }
+        this.showAlert(alertInfo);
+      }
+    })
+  }
+  enemyBulletsOverlapPlayerBullets(enemyBullets: Phaser.GameObjects.Group, playerBullets: Phaser.GameObjects.Group) {
+    this.physics.add.overlap(enemyBullets, playerBullets, (enemyBullet: EnemyBullet, playerBullet: PlayerBullet) => {
+      enemyBullet.destroy();
+      playerBullet.destroy();
+    })
   }
 }
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -271,6 +293,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.lastFired = time + Phaser.Math.RND.between(5000, 10000);
       }
     }
+  }
+
+  enemyBulletsOverlapPlayer() {
+
   }
 }
 export class EnemyBullet extends Phaser.Physics.Arcade.Sprite {

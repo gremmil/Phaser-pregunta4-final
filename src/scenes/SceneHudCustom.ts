@@ -27,6 +27,7 @@ export default class SceneHudCustom extends Phaser.Scene {
     this.timeInfo = this.add.text(this.game.canvas.width - 75, 10, 'Time: 0', { font: '16px Arial', color: '#fff', wordWrap: { width: 100 } });
     this.authorInfo = this.add.text(10, this.game.canvas.height - 20, 'AUTHOR: MIGUEL ANGEL HUANACCHIR CASTILLO U17100659', { font: '10px Arial', color: '#fff' });
     this.lvlInfo = this.add.text(this.game.canvas.width / 2 - 15, 10, 'Level 1', { font: '16px Arial', color: '#fff' });
+    this.playerLivesInfo = this.add.text(10, this.game.canvas.height - 60, 'Lives', { font: '16px Arial', color: '#fff' });
 
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
@@ -59,10 +60,12 @@ export default class SceneHudCustom extends Phaser.Scene {
     const scenes = this.game.scene.scenes;
     scenes.forEach((scene: Phaser.Scene) => {
       if (scene instanceof Scene) {
-        scene.events.on('updateSceneInfo', ({ score, duration, lvl }: SceneInfo) => {
+        scene.events.on('updateSceneInfo', ({ score, duration, lvl, playerLives }: SceneInfo) => {
           this.scoreInfo.setText(`Score: ${score}`);
           this.timeInfo.setText(`Time: ${duration}`);
           this.lvlInfo.setText(`Level ${lvl}`);
+          this.playerLivesInfo.setText(`Lives ${playerLives}`);
+
         });
         scene.events.on('showAlert', (info: AlertInfo): void => {
           const { action, message } = info;

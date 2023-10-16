@@ -31,10 +31,8 @@ export default class Scene2 extends SceneBase {
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
         const enemy: Enemy = this.enemies.create(x * 60 + 100, y * 60 + 100, 'enemy_2', 0);;
-        this.physics.add.overlap(this.player, enemy.bullets, (player: Player, bullet: EnemyBullet) => {
-          bullet.destroy();
-          player.killedAudio.play();
-        })
+        this.enemyBulletsOverlapPlayer(this.player, enemy.bullets);
+        this.enemyBulletsOverlapPlayerBullets(enemy.bullets, this.player.bullets);
       }
     };
     this.physics.add.overlap(this.player.bullets, this.enemies, (bullet, enemy: Enemy) => {
