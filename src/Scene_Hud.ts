@@ -16,7 +16,7 @@ export default class Scene_Hud extends Phaser.Scene {
     this.timeInfo = this.add.text(this.game.canvas.width - 75, 10, 'Time: 0', { font: '16px Arial', color: '#fff', wordWrap: { width: 100 } });
     this.authorInfo = this.add.text(10, this.game.canvas.height - 20, 'AUTHOR: MIGUEL ANGEL HUANACCHIR CASTILLO U17100659', { font: '10px Arial', color: '#fff' });
     //  Grab a reference to the Game Scene
-    let scene: Phaser.Scene = this.scene.get('scene_space_invaders');
+    let scene: Phaser.Scene = this.scene.get('scene_1');
     //  Listen for events from it
     scene.events.on('updateScore', (val: number) => {
       this.score = this.score + val;

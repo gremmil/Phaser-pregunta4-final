@@ -1,8 +1,8 @@
 import { AlertInfo, AlertInfoAction } from "~/classes/AlertInfo";
 import { SceneInfo } from "~/classes/SceneInfo.class";
+import { Scene } from "phaser";
 
 export default class SceneHudCustom extends Phaser.Scene {
-  public sceneInfo: SceneInfo;
   public scoreInfo: Phaser.GameObjects.Text;
   public timeInfo: Phaser.GameObjects.Text;
   public authorInfo: Phaser.GameObjects.Text;
@@ -12,14 +12,17 @@ export default class SceneHudCustom extends Phaser.Scene {
   private alertText!: Phaser.GameObjects.Text;
   private closeActionButton!: Phaser.GameObjects.Text;
   private currentAction: AlertInfoAction;
+  public sceneKeys: Array<string> = ['scene_1', 'scene_2', 'scene_3'];
+  public currentScene: Phaser.Scene;
 
 
 
   constructor() {
     super({ key: 'scene_hud_custom', active: true });
-  }
-  create() {
 
+  }
+
+  create() {
     this.scoreInfo = this.add.text(10, 10, 'Score: 0', { font: '16px Arial', color: '#fff' });
     this.timeInfo = this.add.text(this.game.canvas.width - 75, 10, 'Time: 0', { font: '16px Arial', color: '#fff', wordWrap: { width: 100 } });
     this.authorInfo = this.add.text(10, this.game.canvas.height - 20, 'AUTHOR: MIGUEL ANGEL HUANACCHIR CASTILLO U17100659', { font: '10px Arial', color: '#fff' });
@@ -28,7 +31,7 @@ export default class SceneHudCustom extends Phaser.Scene {
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
 
-    this.popupBackground = this.add.rectangle(centerX, centerY, 400, 200, 0x000000);
+    this.popupBackground = this.add.rectangle(centerX, centerY, this.cameras.main.width + 50, 200, 0x000000);
     this.popupBackground.setStrokeStyle(4, 0xffffff);
     this.popupBackground.setDepth(1);
 
@@ -36,7 +39,7 @@ export default class SceneHudCustom extends Phaser.Scene {
       font: '16px Arial',
       color: '#ffffff',
       align: 'center',
-      wordWrap: { width: 350, useAdvancedWrap: true }
+      wordWrap: { width: this.cameras.main.width, useAdvancedWrap: true }
     });
     this.alertText.setOrigin(0.5);
     this.alertText.setDepth(2);
@@ -53,20 +56,27 @@ export default class SceneHudCustom extends Phaser.Scene {
       this.hideAlert();
       this.events.emit(this.currentAction);
     });
-    let scene: Phaser.Scene = this.scene.get('scene_space_invaders');
-    scene.events.on('updateSceneInfo', ({ score, duration, lvl }: SceneInfo) => {
-      this.scoreInfo.setText(`Score: ${score}`);
-      this.timeInfo.setText(`Time: ${duration}`);
-      this.lvlInfo.setText(`Level ${lvl}`);
-
-    }, this);
-    scene.events.on('showAlert', (info: AlertInfo): void => {
-      const { action, message } = info;
-      this.currentAction = action;
-      this.showAlert(message);
-    }, this);
+    const scenes = this.game.scene.scenes;
+    scenes.forEach((scene: Phaser.Scene) => {
+      if (scene instanceof Scene) {
+        scene.events.on('updateSceneInfo', ({ score, duration, lvl }: SceneInfo) => {
+          this.scoreInfo.setText(`Score: ${score}`);
+          this.timeInfo.setText(`Time: ${duration}`);
+          this.lvlInfo.setText(`Level ${lvl}`);
+        });
+        scene.events.on('showAlert', (info: AlertInfo): void => {
+          const { action, message } = info;
+          this.currentAction = action;
+          this.showAlert(message);
+        });
+      }
+    });
 
     this.hideAlert();
+  }
+
+  ready() {
+
   }
 
   showAlert(message: string) {
