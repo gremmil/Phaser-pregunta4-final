@@ -25,7 +25,7 @@ export default class SceneHudCustom extends Phaser.Scene {
   create() {
     this.scoreInfo = this.add.text(10, 10, 'Score: 0', { font: '16px Arial', color: '#fff' });
     this.timeInfo = this.add.text(this.game.canvas.width - 75, 10, 'Time: 0', { font: '16px Arial', color: '#fff', wordWrap: { width: 100 } });
-    this.authorInfo = this.add.text(10, this.game.canvas.height - 20, 'AUTHOR: MIGUEL ANGEL HUANACCHIR CASTILLO U17100659', { font: '10px Arial', color: '#fff' });
+    this.authorInfo = this.add.text(10, this.game.canvas.height - 20, 'MIGUEL ANGEL HUANACCHIR CASTILLO U17100659 EX FINAL', { font: '10px Arial', color: '#fff' });
     this.lvlInfo = this.add.text(this.game.canvas.width / 2 - 15, 10, 'Level 1', { font: '16px Arial', color: '#fff' });
     this.playerLivesInfo = this.add.text(10, this.game.canvas.height - 60, 'Lives', { font: '16px Arial', color: '#fff' });
 
